@@ -8,22 +8,23 @@ int main(){
     fd2 = open("C:\\Users\\Varsha\\CLionProjects\\OS_lab\\file2.txt", O_WRONLY | O_CREAT, 0644); // Ensure the file is created if it doesn't exist
     if (fd1 == -1 || fd2 == -1) {
         perror("Failed to open file");
-        return 1;
+        return 1; // Exit if any file could not be opened
     }
 
     char c;
     ssize_t read_count;
-    int length=0, count = 0;
-    while((read_count = read(fd1,&c,1)>0)){
-        length ++;
+    while ((read_count = read(fd1, &c, 1)) > 0) {
+        if (write(fd2, &c, 1) == -1) {
+            perror("Failed to write to file");
+            return 1; // Handle possible write error
+        }
     }
-    lseek(fd1, -1, SEEK_END);
-    while(count < length){
-        read(fd1,&c,1);
-        write(fd2,&c,1);
-        lseek(fd1, -2, SEEK_CUR);
-        count++;
+
+    if (read_count == -1) {
+        perror("Failed to read from file");
+        return 1; // Handle possible read error
     }
+
     close(fd1);
     close(fd2);
     return 0;
