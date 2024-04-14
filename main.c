@@ -13,18 +13,13 @@ int main(){
 
     char c;
     ssize_t read_count;
-    int length=0, count = 0;
+    int length=0;
     while((read_count = read(fd1,&c,1)>0)){
-        length ++;
+        if(c == ' ' || c== '\t' || c == '\n'){
+            length++;
+        }
     }
-    lseek(fd1, -1, SEEK_END);
-    while(count < length){
-        read(fd1,&c,1);
-        write(fd2,&c,1);
-        lseek(fd1, -2, SEEK_CUR);
-        count++;
-    }
+    printf("%d", length);
     close(fd1);
-    close(fd2);
     return 0;
 }
